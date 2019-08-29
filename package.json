@@ -1,0 +1,11 @@
+{
+  "name": "review-alerter",
+  "version": "1.0.0",
+  "description": "a program to alert when a new review on yelp has been posted",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "bundit",
+  "license": "ISC"
+}
