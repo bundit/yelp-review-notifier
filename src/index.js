@@ -67,19 +67,25 @@ function processAndFormatData(html) {
   // Extract the data and store them in a list
   let reviews = [];
   ul.childNodes.forEach(li => {
-    li = li.firstChild.children[1].firstChild.firstChild;
+    li = li.firstChild.children[1];
+    let date = new Date(li.firstChild.firstChild.children[1].firstChild.textContent);
+    let rating = li.firstChild.firstChild.firstChild.firstChild.firstChild.getAttribute('aria-label')[0];
+    let text = li.children[2].firstChild.firstChild.textContent;
     reviews.push({
-      date: new Date(li.children[1].firstChild.textContent),
-      rating: Number(li.firstChild.firstChild.firstChild.getAttribute('aria-label')[0])
-    })
+      date: date,
+      rating: rating,
+      text: text
+    });
   })
+
+  console.log(reviews);
 
   return reviews;
 }
 
 // Given a list of reviews, returns a new list of reviews between today and number of days prior
 // If no number of days is supplied then will return the revies posted today
-// @param reviews the list of reviews [{date, rating}, .., ..]
+// @param reviews the list of reviews [{date, rating, text}, .., ..]
 // @param numDays the number of days to include (e.g 7 - between today and 1 week ago)
 // @return list of filtered arrays
 function filterReviews(reviews, numDays = 0) {
