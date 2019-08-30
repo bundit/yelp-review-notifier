@@ -12,7 +12,10 @@ const URI = 'https://www.yelp.com/biz/sawasdee-soquel';
 const SORT_NEW = '?sort_by=date_desc';
 const QUERY_SELECT = '.lemon--ul__373c0__1_cxs';
 const NUM_REVIEWS = 20;
-const DAYS_FILTERED = 7;
+const DAYS_FILTERED = 30;
+
+// Email variables
+const SUBJECT = "A new review has been posted";
 
 axios.get(URI + SORT_NEW)
 .then(response => processAndFormatData(response.data))
@@ -21,27 +24,7 @@ axios.get(URI + SORT_NEW)
 
   // There are new reviews
   if (filteredReviews.length !== 0) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: secret.emailSender,
-        pass: secret.emailPass
-      }
-    })
-
-    const mailOptions = {
-      from: 'notifier',
-      to: 'example@gmail.com',
-      subject: 'This is a test',
-      html: '<p> new review has been posted<p>'
-    }
-
-    transporter.sendMail(mailOptions, function (err, info) {
-      if (err)
-        console.log(err);
-      else
-        console.log(info);
-    });
+    sendEmailWithReviews(secret.emailReceiver, secret.emailSender, secret.emailPass, filteredReviews);
   }
   else {} // There are no new reviews
     // Do nothing
@@ -77,8 +60,6 @@ function processAndFormatData(html) {
       text: text
     });
   })
-
-  console.log(reviews);
 
   return reviews;
 }
@@ -117,4 +98,28 @@ function dateIsEqual(date1, date2) {
     date1.getMonth() === date2.getMonth() &&
     date1.getFullYear() === date2.getFullYear()
   )
+}
+
+function sendEmailWithReviews(recipient, sender, pass, reviews) {
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: sender,
+      pass: pass
+    }
+  })
+
+  const mailOptions = {
+    from: 'review-notifier',
+    to: recipient,
+    subject: SUBJECT,
+    html: '<p> new review has been posted<p>'
+  }
+
+  transporter.sendMail(mailOptions, function (err, info) {
+    if (err)
+      console.log(err);
+    else
+      console.log(info);
+  });
 }
