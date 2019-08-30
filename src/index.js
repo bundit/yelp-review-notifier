@@ -1,18 +1,51 @@
+// Module requires
 const axios = require('axios');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
+const nodemailer = require('nodemailer');
 
+// Secret shh...
+const secret = require('../config/keys.js');
+
+// Program variables
 const URI = 'https://www.yelp.com/biz/sawasdee-soquel';
 const SORT_NEW = '?sort_by=date_desc';
 const QUERY_SELECT = '.lemon--ul__373c0__1_cxs';
 const NUM_REVIEWS = 20;
-
-
-
+const DAYS_FILTERED = 7;
 
 axios.get(URI + SORT_NEW)
 .then(response => processAndFormatData(response.data))
-.then(reviews => console.log(reviews, filterReviews(reviews, 30)));
+.then(reviews => {
+  let filteredReviews = filterReviews(reviews, DAYS_FILTERED);
+
+  // There are new reviews
+  if (filteredReviews.length !== 0) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: secret.emailSender,
+        pass: secret.emailPass
+      }
+    })
+
+    const mailOptions = {
+      from: 'notifier',
+      to: 'example@gmail.com',
+      subject: 'This is a test',
+      html: '<p> new review has been posted<p>'
+    }
+
+    transporter.sendMail(mailOptions, function (err, info) {
+      if (err)
+        console.log(err);
+      else
+        console.log(info);
+    });
+  }
+  else {} // There are no new reviews
+    // Do nothing
+});
 
 
 // Process data returned in response.data from axios GET
