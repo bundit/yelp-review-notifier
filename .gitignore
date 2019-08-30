@@ -1,0 +1,5 @@
+# API keys
+config/keys.js
+
+# Dependencies
+node_modules/
