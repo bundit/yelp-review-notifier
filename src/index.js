@@ -100,7 +100,24 @@ function dateIsEqual(date1, date2) {
   )
 }
 
+// Sends an email containing the reviews
+// @param recipient the email receiver
+// @param sender the email sender
+// @param pass authentication
+// @param reviews list of reviews to send
+// @return void
 function sendEmailWithReviews(recipient, sender, pass, reviews) {
+  // Generate the message for the email
+  let emailText = "";
+  reviews.forEach(review => {
+    emailText += reviewToHTML(review);
+  })
+
+  // Add a link to view the yelp page
+  emailText += `
+  <p><a href=${URI}${SORT_NEW} target="_blank">View the reviews here</a></p>
+  `
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -113,7 +130,7 @@ function sendEmailWithReviews(recipient, sender, pass, reviews) {
     from: 'review-notifier',
     to: recipient,
     subject: SUBJECT,
-    html: '<p> new review has been posted<p>'
+    html: emailText
   }
 
   transporter.sendMail(mailOptions, function (err, info) {
@@ -122,4 +139,16 @@ function sendEmailWithReviews(recipient, sender, pass, reviews) {
     else
       console.log(info);
   });
+}
+
+// Takes a review object {date, rating, text} and turns it into a string of html to display
+// @param review the review object
+// @return html representation of review object
+function reviewToHTML(review) {
+  return `
+    <div style="border: black 1px solid; padding:15px">
+        <p>Rating: ${review.rating}/5 | Date: ${review.date.toDateString()}</p> <br>
+        <p>${review.text}</p>
+    </div> <br>
+  `
 }
