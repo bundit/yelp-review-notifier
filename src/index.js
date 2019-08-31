@@ -17,18 +17,23 @@ const DAYS_FILTERED = 30;
 // Email variables
 const SUBJECT = "A new review has been posted";
 
-axios.get(URI + SORT_NEW)
-.then(response => processAndFormatData(response.data))
-.then(reviews => {
-  let filteredReviews = filterReviews(reviews, DAYS_FILTERED);
+(function main () {
+  // HTTP GET
+  axios.get(URI + SORT_NEW)
+  // Process body of response
+  .then(response => processAndFormatData(response.data))
+  // Get the reviews we want
+  .then(reviews => {
+    let filteredReviews = filterReviews(reviews, DAYS_FILTERED);
 
-  // There are new reviews
-  if (filteredReviews.length !== 0) {
-    sendEmailWithReviews(secret.emailReceiver, secret.emailSender, secret.emailPass, filteredReviews);
-  }
-  else {} // There are no new reviews
-    // Do nothing
-});
+    // There are new reviews
+    if (filteredReviews.length !== 0) {
+      sendEmailWithReviews(secret.emailReceiver, secret.emailSender, secret.emailPass, filteredReviews);
+    }
+    else {} // There are no new reviews
+      // Do nothing
+  });
+})();
 
 
 // Process data returned in response.data from axios GET
