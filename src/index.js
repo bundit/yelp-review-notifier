@@ -20,19 +20,23 @@ const SUBJECT = "A new review has been posted";
 (function main () {
   // HTTP GET
   axios.get(URI + SORT_NEW)
-  // Process body of response
-  .then(response => processAndFormatData(response.data))
-  // Get the reviews we want
-  .then(reviews => {
-    let filteredReviews = filterReviews(reviews, DAYS_FILTERED);
 
-    // There are new reviews
-    if (filteredReviews.length !== 0) {
-      sendEmailWithReviews(secret.emailReceiver, secret.emailSender, secret.emailPass, filteredReviews);
-    }
-    else {} // There are no new reviews
-      // Do nothing
-  });
+    // Process body of response
+    .then(response => processAndFormatData(response.data))
+    .catch(error => console.log("Error while requesting page:", error))
+
+    // Get the reviews we want
+    .then(reviews => {
+      let filteredReviews = filterReviews(reviews, DAYS_FILTERED);
+
+      // There are new reviews
+      if (filteredReviews.length !== 0) {
+        sendEmailWithReviews(secret.emailReceiver, secret.emailSender, secret.emailPass, filteredReviews);
+      }
+      else {} // There are no new reviews
+        // Do nothing
+    });
+
 })();
 
 
