@@ -39,10 +39,11 @@ const SUBJECT = "A new review has been posted";
 
 })();
 
-
-// Process data returned in response.data from axios GET
-// @param response body from http get
-// @return list of review data {date, rating}
+/**
+ * Process data returned in response.data from axios GET
+ * @param {object} response - body from http get
+ * @return {object[]} list of review data {date, rating}
+ */
 function processAndFormatData(html) {
   // Create dom object from string data
   let dom = new JSDOM(html);
@@ -73,11 +74,13 @@ function processAndFormatData(html) {
   return reviews;
 }
 
-// Given a list of reviews, returns a new list of reviews between today and number of days prior
-// If no number of days is supplied then will return the revies posted today
-// @param reviews the list of reviews [{date, rating, text}, .., ..]
-// @param numDays the number of days to include (e.g 7 - between today and 1 week ago)
-// @return list of filtered arrays
+/**
+ * Given a list of reviews, returns a new list of reviews between today and number of days prior
+ * If no number of days is supplied then will return the revies posted today
+ * @param {object} reviews - the list of reviews [{date, rating, text}, .., ..]
+ * @param {number } numDays - the number of days to include (e.g 7 - between today and 1 week ago)
+ * @return {object[]} list of filtered arrays
+ */
 function filterReviews(reviews, numDays = 0) {
   const today = new Date();
 
@@ -98,9 +101,10 @@ function filterReviews(reviews, numDays = 0) {
   }
 }
 
-// Given two date objects
-// @return true if they are the same day/month/year
-// @return false otherwise
+/**
+ * Given two date objects
+ * @return {boolean} true if they are the same day/month/year otherwise false
+ */
 function dateIsEqual(date1, date2) {
   return (
     date1.getDate() === date2.getDate() &&
@@ -109,12 +113,14 @@ function dateIsEqual(date1, date2) {
   )
 }
 
-// Sends an email containing the reviews
-// @param recipient the email receiver
-// @param sender the email sender
-// @param pass authentication
-// @param reviews list of reviews to send
-// @return void
+/**
+ * Sends an email containing the reviews
+ * @param {string} recipient - the email receiver
+ * @param {string} sender - the email sender
+ * @param {string} pass - authentication
+ * @param {object[]} reviews - list of reviews to send
+ * @return {void}
+ */
 function sendEmailWithReviews(recipient, sender, pass, reviews) {
   // Generate the message for the email
   let emailText = "";
@@ -150,9 +156,11 @@ function sendEmailWithReviews(recipient, sender, pass, reviews) {
   });
 }
 
-// Takes a review object {date, rating, text} and turns it into a string of html to display
-// @param review the review object
-// @return html representation of review object
+/**
+ * Takes a review object {date, rating, text} and turns it into a string of html to display
+ * @param {object} review the review object
+ * @return {object} html representation of review object
+ */
 function reviewToHTML(review) {
   return `
     <div style="border: black 1px solid; padding:15px">
